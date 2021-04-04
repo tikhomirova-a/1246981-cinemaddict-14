@@ -10,13 +10,16 @@ import {createRatedListTemplate} from './view/rated-film-list.js';
 import {createCommentedListTemplate} from './view/commented-film-list.js';
 import {createFooterStatTemplate} from './view/footer-stat.js';
 import {createPopapTemplate} from './view/popap.js';
+import {generateMovie} from './mock/movie.js';
 
-const ALL_CARDS_AMOUNT = 5;
+const ALL_CARDS_AMOUNT = 18;
 const EXTRA_CARDS_AMOUNT = 2;
 
 const render = (container, template, place = 'beforeend') => {
   container.insertAdjacentHTML(place, template);
 };
+
+const movies = new Array(ALL_CARDS_AMOUNT).fill().map(generateMovie);
 
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
@@ -41,7 +44,7 @@ filmsListElements.forEach((filmsListElement) => {
 const filmsListContainer = siteMainElement.querySelector('.films-list__container');
 
 for (let i = 0; i < ALL_CARDS_AMOUNT; i++) {
-  render(filmsListContainer, createCardTemplate());
+  render(filmsListContainer, createCardTemplate(movies[i]));
 }
 
 const filmsList = siteMainElement.querySelector('.films-list');
@@ -50,9 +53,9 @@ render(filmsList, createLoadMoreButtonTemplate());
 const filmsListExtraElements = siteMainElement.querySelectorAll('.films-list--extra');
 filmsListExtraElements.forEach((list) => {
   for (let i = 0; i < EXTRA_CARDS_AMOUNT; i++) {
-    render(list.querySelector('.films-list__container'), createCardTemplate());
+    render(list.querySelector('.films-list__container'), createCardTemplate(movies[i]));
   }
 });
 
 render(footerStat, createFooterStatTemplate());
-render(siteFooterElement, createPopapTemplate(), 'afterend');
+// render(siteFooterElement, createPopapTemplate(), 'afterend');
