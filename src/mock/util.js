@@ -14,4 +14,20 @@ const generateRandomFloat = (a = 0, b = 1) => {
   return Math.round(float * 10) / 10;
 };
 
-export {generateRandomInteger, generateRandomFloat};
+const generateElement = (arr) => {
+  return arr[generateRandomInteger(0, arr.length - 1)];
+};
+
+const generateElements = (arr) => {
+  const elementsAmount = generateRandomInteger(1, 4);
+  const elementsArr = [];
+  for (let i = 0; i < elementsAmount; i++) {
+    const newElement = arr[generateRandomInteger(0, arr.length - 1)];
+    if (!elementsArr.includes(newElement)) {
+      elementsArr.push(newElement);
+    }
+  }
+  return elementsArr;
+};
+
+export {generateRandomInteger, generateRandomFloat, generateElement, generateElements};

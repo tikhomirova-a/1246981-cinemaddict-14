@@ -10,7 +10,7 @@ export const createCardTemplate = (movie) => {
           </p>
           <img src="./${poster}" alt="" class="film-card__poster">
           <p class="film-card__description">${description}</p>
-          <a class="film-card__comments">${comments === 1 ? comments.length.toString().concat(' comment') : comments.length.toString().concat(' comments')}</a>
+          <a class="film-card__comments">${comments.length} ${comments.length > 1 ? 'comments' : 'comment'}</a>
           <div class="film-card__controls">
             <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist" type="button">Add to watchlist</button>
             <button class="film-card__controls-item button film-card__controls-item--mark-as-watched" type="button">Mark as watched</button>

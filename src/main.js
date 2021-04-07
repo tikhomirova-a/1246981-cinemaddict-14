@@ -10,7 +10,9 @@ import {createRatedListTemplate} from './view/rated-film-list.js';
 import {createCommentedListTemplate} from './view/commented-film-list.js';
 import {createFooterStatTemplate} from './view/footer-stat.js';
 import {createPopapTemplate} from './view/popap.js';
+import {createCommentTemplate} from './view/comment.js';
 import {generateMovie} from './mock/movie.js';
+import {generateComments} from './mock/comments.js';
 
 const ALL_CARDS_AMOUNT = 18;
 const EXTRA_CARDS_AMOUNT = 2;
@@ -20,6 +22,7 @@ const render = (container, template, place = 'beforeend') => {
 };
 
 const movies = new Array(ALL_CARDS_AMOUNT).fill().map(generateMovie);
+const comments = generateComments();
 
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
@@ -58,4 +61,12 @@ filmsListExtraElements.forEach((list) => {
 });
 
 render(footerStat, createFooterStatTemplate());
-// render(siteFooterElement, createPopapTemplate(), 'afterend');
+render(siteFooterElement, createPopapTemplate(movies[0]), 'afterend');
+
+const popap = document.querySelector('.film-details');
+const commentList = popap.querySelector('.film-details__comments-list');
+
+// for (const comment of comments) {
+//   render(commentList, createCommentTemplate(comment));
+// }
+console.log(movies[0]);

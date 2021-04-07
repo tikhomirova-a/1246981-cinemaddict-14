@@ -1,4 +1,5 @@
-import {generateRandomInteger, generateRandomFloat} from './util.js';
+import {generateRandomInteger, generateRandomFloat, generateElement, generateElements} from './util.js';
+import {generateComments} from './comments.js';
 import dayjs from 'dayjs';
 
 const titles = [
@@ -81,22 +82,6 @@ const genres = [
   'Western',
 ];
 
-const generateElement = (arr) => {
-  return arr[generateRandomInteger(0, arr.length - 1)];
-};
-
-const generateElements = (arr) => {
-  const elementsAmount = generateRandomInteger(1, 4);
-  const elementsArr = [];
-  for (let i = 0; i < elementsAmount; i++) {
-    const newElement = arr[generateRandomInteger(0, arr.length - 1)];
-    if (!elementsArr.includes(newElement)) {
-      elementsArr.push(newElement);
-    }
-  }
-  return elementsArr;
-};
-
 const generateDate = () => {
   const MAX_DAYS_GAP = 365;
   const MAX_YEARS_GAP = 30;
@@ -125,7 +110,7 @@ const generateMovie = () => {
     runtime: generateRuntime(),
     country: generateElement(countries),
     genres: generateElements(genres),
-    comments: [0, 1, 4],
+    comments: generateComments(),
     watchlist: Boolean(generateRandomInteger(0, 1)),
     watched: Boolean(generateRandomInteger(0, 1)),
     watchingDate: generateDate(),
