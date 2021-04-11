@@ -96,6 +96,7 @@ const generateRuntime = () => {
 };
 
 const generateMovie = () => {
+  const watchedMovie = Boolean(generateRandomInteger(0, 1));
   return {
     title: generateElement(titles),
     alternativeTitle: generateElement(titles),
@@ -111,8 +112,8 @@ const generateMovie = () => {
     country: generateElement(countries),
     genres: generateElements(genres),
     comments: generateComments(),
-    watchlist: Boolean(generateRandomInteger(0, 1)),
-    watched: Boolean(generateRandomInteger(0, 1)),
+    watched: watchedMovie,
+    watchlist: watchedMovie ? false : Boolean(generateRandomInteger(0, 1)),
     watchingDate: generateDate(),
     favorite: Boolean(generateRandomInteger(0, 1)),
   };
