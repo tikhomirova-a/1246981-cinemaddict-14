@@ -75,13 +75,6 @@ if (movies.length > CARDS_PER_STEP) {
   loadMoreButton.addEventListener('click', onLoadMoreClick);
 }
 
-// const filmsListExtraElements = siteMainElement.querySelectorAll('.films-list--extra');
-// filmsListExtraElements.forEach((list) => {
-//   for (let i = 0; i < EXTRA_CARDS_AMOUNT; i++) {
-//     render(list.querySelector('.films-list__container'), createCardTemplate(movies[i]));
-//   }
-// });
-
 const compareByRating = (a, b) => {
   const ratingA = a.rating;
   const ratingB = b.rating;
