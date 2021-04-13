@@ -23,13 +23,23 @@ const render = (container, template, place = 'beforeend') => {
 
 const movies = new Array(ALL_CARDS_AMOUNT).fill().map(generateMovie);
 const filters = generateFilter(movies);
+let watchedFilmsAmount = 0;
+
+const getWatchedFilmsAmount = (movies) => {
+  movies.forEach((movie) => {
+    if (movie.watched) {
+      watchedFilmsAmount++;
+    }
+  });
+  return watchedFilmsAmount;
+};
 
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer');
 const footerStat = siteFooterElement.querySelector('.footer__statistics');
 
-render(siteHeaderElement, createUserRankTemplate());
+render(siteHeaderElement, createUserRankTemplate(getWatchedFilmsAmount(movies)));
 render(siteMainElement, createMenuTemplate(filters));
 render(siteMainElement, createSortingTemplate());
 render(siteMainElement, createFilmsContainerTemplate());
@@ -111,4 +121,4 @@ for (let i = 0; i < EXTRA_CARDS_AMOUNT; i++) {
 }
 
 render(footerStat, createFooterStatTemplate(movies.length));
-render(siteFooterElement, createPopapTemplate(movies[0]), 'afterend');
+// render(siteFooterElement, createPopapTemplate(movies[0]), 'afterend');
