@@ -88,25 +88,13 @@ if (movies.length > CARDS_PER_STEP) {
 const compareByRating = (a, b) => {
   const ratingA = a.rating;
   const ratingB = b.rating;
-  let comparison = 0;
-  if (ratingA > ratingB) {
-    comparison = -1;
-  } else if (ratingA < ratingB) {
-    comparison = 1;
-  }
-  return comparison;
+  return ratingB - ratingA;
 };
 
 const compareByComments = (a, b) => {
   const commentsA = a.comments.length;
   const commentsB = b.comments.length;
-  let comparison = 0;
-  if (commentsA > commentsB) {
-    comparison = -1;
-  } else if (commentsA < commentsB) {
-    comparison = 1;
-  }
-  return comparison;
+  return commentsB - commentsA;
 };
 
 const filmsRatedList = siteMainElement.querySelector('#ratedList');
@@ -121,4 +109,4 @@ for (let i = 0; i < EXTRA_CARDS_AMOUNT; i++) {
 }
 
 render(footerStat, createFooterStatTemplate(movies.length));
-// render(siteFooterElement, createPopapTemplate(movies[0]), 'afterend');
+render(siteFooterElement, createPopapTemplate(movies[0]), 'afterend');
