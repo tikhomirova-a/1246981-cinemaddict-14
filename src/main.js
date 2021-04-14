@@ -11,6 +11,7 @@ import {createCommentedListTemplate} from './view/commented-film-list.js';
 import {createFooterStatTemplate} from './view/footer-stat.js';
 import {createPopapTemplate} from './view/popup.js';
 import {generateMovie} from './mock/movie.js';
+import {generateComments} from './mock/comments.js';
 import {generateFilter} from './mock/filter.js';
 
 const ALL_CARDS_AMOUNT = 18;
@@ -22,8 +23,19 @@ const render = (container, template, place = 'beforeend') => {
 };
 
 const movies = new Array(ALL_CARDS_AMOUNT).fill().map(generateMovie);
+const comments = generateComments();
 const filters = generateFilter(movies);
 let watchedFilmsAmount = 0;
+
+const filterComments = (idArr) => {
+  const filteredComments = [];
+  comments.map((comment) => {
+    if (idArr.includes(comment.id)) {
+      return filteredComments.push(comment);
+    }
+  });
+  return filteredComments;
+};
 
 const getWatchedFilmsAmount = (movies) => {
   movies.forEach((movie) => {
@@ -92,8 +104,8 @@ const compareByRating = (a, b) => {
 };
 
 const compareByComments = (a, b) => {
-  const commentsA = a.comments.length;
-  const commentsB = b.comments.length;
+  const commentsA = a.commentsId.length;
+  const commentsB = b.commentsId.length;
   return commentsB - commentsA;
 };
 
@@ -109,4 +121,4 @@ for (let i = 0; i < EXTRA_CARDS_AMOUNT; i++) {
 }
 
 render(footerStat, createFooterStatTemplate(movies.length));
-render(siteFooterElement, createPopapTemplate(movies[0]), 'afterend');
+render(siteFooterElement, createPopapTemplate(movies[0], filterComments(movies[0].commentsId)), 'afterend');

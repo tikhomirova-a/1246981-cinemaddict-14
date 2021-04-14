@@ -1,11 +1,10 @@
 import dayjs from 'dayjs';
 
-export const createPopapTemplate = (movie) => {
+export const createPopapTemplate = (movie, comments) => {
   const {
     actors,
     ageRating,
     alternativeTitle,
-    comments,
     description,
     director,
     favorite,

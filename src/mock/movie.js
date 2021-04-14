@@ -1,5 +1,4 @@
 import {generateRandomInteger, generateRandomFloat, generateElement, generateElements} from './util.js';
-import {generateComments} from './comments.js';
 import dayjs from 'dayjs';
 
 const titles = [
@@ -95,6 +94,19 @@ const generateRuntime = () => {
   return `${hoursAmount !== 0 ? hoursAmount.toString().concat('h ') : ''}${generateRandomInteger(0, 59)}m`;
 };
 
+const generateCommentsId = () => {
+  const ids = [];
+  const count = generateRandomInteger(0, 5);
+  for (let i = 0; i <= count; i++) {
+    let newId = generateRandomInteger(0, 9);
+    while (ids.includes(newId)) {
+      newId = generateRandomInteger(0, 9);
+    }
+    ids.push(newId);
+  }
+  return ids;
+};
+
 const generateMovie = () => {
   const watchedMovie = Boolean(generateRandomInteger(0, 1));
   return {
@@ -111,7 +123,7 @@ const generateMovie = () => {
     runtime: generateRuntime(),
     country: generateElement(countries),
     genres: generateElements(genres),
-    comments: generateComments(),
+    commentsId: generateCommentsId(),
     watched: watchedMovie,
     watchlist: watchedMovie ? false : Boolean(generateRandomInteger(0, 1)),
     watchingDate: generateDate(),
