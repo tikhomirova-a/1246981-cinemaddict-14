@@ -9,13 +9,41 @@ import {createLoadMoreButtonTemplate} from './view/show-more-button.js';
 import {createRatedListTemplate} from './view/rated-film-list.js';
 import {createCommentedListTemplate} from './view/commented-film-list.js';
 import {createFooterStatTemplate} from './view/footer-stat.js';
-import {createPopapTemplate} from './view/popap.js';
+import {createPopapTemplate} from './view/popup.js';
+import {generateMovie} from './mock/movie.js';
+import {generateComments} from './mock/comments.js';
+import {generateFilter} from './mock/filter.js';
 
-const ALL_CARDS_AMOUNT = 5;
+const ALL_CARDS_AMOUNT = 18;
 const EXTRA_CARDS_AMOUNT = 2;
+const CARDS_PER_STEP = 5;
 
 const render = (container, template, place = 'beforeend') => {
   container.insertAdjacentHTML(place, template);
+};
+
+const movies = new Array(ALL_CARDS_AMOUNT).fill().map(generateMovie);
+const comments = generateComments();
+const filters = generateFilter(movies);
+let watchedFilmsAmount = 0;
+
+const filterComments = (idArr) => {
+  const filteredComments = [];
+  comments.map((comment) => {
+    if (idArr.includes(comment.id)) {
+      return filteredComments.push(comment);
+    }
+  });
+  return filteredComments;
+};
+
+const getWatchedFilmsAmount = (movies) => {
+  movies.forEach((movie) => {
+    if (movie.watched) {
+      watchedFilmsAmount++;
+    }
+  });
+  return watchedFilmsAmount;
 };
 
 const siteHeaderElement = document.querySelector('.header');
@@ -23,8 +51,8 @@ const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer');
 const footerStat = siteFooterElement.querySelector('.footer__statistics');
 
-render(siteHeaderElement, createUserRankTemplate());
-render(siteMainElement, createMenuTemplate());
+render(siteHeaderElement, createUserRankTemplate(getWatchedFilmsAmount(movies)));
+render(siteMainElement, createMenuTemplate(filters));
 render(siteMainElement, createSortingTemplate());
 render(siteMainElement, createFilmsContainerTemplate());
 
@@ -40,19 +68,57 @@ filmsListElements.forEach((filmsListElement) => {
 
 const filmsListContainer = siteMainElement.querySelector('.films-list__container');
 
-for (let i = 0; i < ALL_CARDS_AMOUNT; i++) {
-  render(filmsListContainer, createCardTemplate());
+for (let i = 0; i < Math.min(movies.length, CARDS_PER_STEP); i++) {
+  render(filmsListContainer, createCardTemplate(movies[i]));
 }
 
 const filmsList = siteMainElement.querySelector('.films-list');
-render(filmsList, createLoadMoreButtonTemplate());
 
-const filmsListExtraElements = siteMainElement.querySelectorAll('.films-list--extra');
-filmsListExtraElements.forEach((list) => {
-  for (let i = 0; i < EXTRA_CARDS_AMOUNT; i++) {
-    render(list.querySelector('.films-list__container'), createCardTemplate());
-  }
-});
+if (movies.length > CARDS_PER_STEP) {
+  let renderedCardsCount = CARDS_PER_STEP;
+  render(filmsList, createLoadMoreButtonTemplate());
 
-render(footerStat, createFooterStatTemplate());
-render(siteFooterElement, createPopapTemplate(), 'afterend');
+  const loadMoreButton = filmsList.querySelector('.films-list__show-more');
+
+  const onLoadMoreClick = (evt) => {
+    evt.preventDefault();
+
+    movies
+      .slice(renderedCardsCount, renderedCardsCount + CARDS_PER_STEP)
+      .forEach((movie) => render(filmsListContainer, createCardTemplate(movie)));
+
+    renderedCardsCount +=CARDS_PER_STEP;
+
+    if (renderedCardsCount >= movies.length) {
+      loadMoreButton.remove();
+    }
+  };
+
+  loadMoreButton.addEventListener('click', onLoadMoreClick);
+}
+
+const compareByRating = (a, b) => {
+  const ratingA = a.rating;
+  const ratingB = b.rating;
+  return ratingB - ratingA;
+};
+
+const compareByComments = (a, b) => {
+  const commentsA = a.commentsId.length;
+  const commentsB = b.commentsId.length;
+  return commentsB - commentsA;
+};
+
+const filmsRatedList = siteMainElement.querySelector('#ratedList');
+const filmsCommentedList = siteMainElement.querySelector('#commentedList');
+
+const sortedByRating = [...movies].sort(compareByRating);
+const sortedByComments = [...movies].sort(compareByComments);
+
+for (let i = 0; i < EXTRA_CARDS_AMOUNT; i++) {
+  render(filmsRatedList.querySelector('.films-list__container'), createCardTemplate(sortedByRating[i]));
+  render(filmsCommentedList.querySelector('.films-list__container'), createCardTemplate(sortedByComments[i]));
+}
+
+render(footerStat, createFooterStatTemplate(movies.length));
+render(siteFooterElement, createPopapTemplate(movies[0], filterComments(movies[0].commentsId)), 'afterend');
