@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
+import {createElement} from '../util.js';
 
-export const createPopapTemplate = (movie, comments) => {
+const createPopapTemplate = (movie, comments) => {
   const {
     actors,
     ageRating,
@@ -152,3 +153,26 @@ export const createPopapTemplate = (movie, comments) => {
   </form>
 </section>`;
 };
+
+export default class Popap {
+  constructor(movie, comments) {
+    this._movie = movie;
+    this._comments = comments;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPopapTemplate(this._movie, this._comments);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
