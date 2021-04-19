@@ -13,6 +13,7 @@ import PopapView from './view/popup.js';
 import {generateMovie} from './mock/movie.js';
 import {generateComments} from './mock/comments.js';
 import {generateFilter} from './mock/filter.js';
+import {getUserRank} from './util.js';
 import {render} from './util.js';
 
 const ALL_CARDS_AMOUNT = 18;
@@ -22,7 +23,6 @@ const CARDS_PER_STEP = 5;
 const movies = new Array(ALL_CARDS_AMOUNT).fill().map(generateMovie);
 const comments = generateComments();
 const filters = generateFilter(movies);
-let watchedFilmsAmount = 0;
 
 const renderCard = (filmsContainer, movie) => {
   const cardComponent = new CardView(movie);
@@ -39,43 +39,42 @@ const renderCard = (filmsContainer, movie) => {
 
   const popupComponent = new PopapView(movie, filterComments(movie.commentsId));
 
-  const showPopup = (evt) => {
-    evt.preventDefault();
+  const showPopup = () => {
     siteBodyElement.appendChild(popupComponent.getElement());
     siteBodyElement.classList.add('hide-overflow');
-    popupComponent.getElement().querySelector('.film-details__close-btn').addEventListener('click', hidePopup);
+    popupComponent.getElement().querySelector('.film-details__close-btn').addEventListener('click', onCloseBtnClick);
   };
 
-  const hidePopup = (evt) => {
-    evt.preventDefault();
+  const hidePopup = () => {
     siteBodyElement.removeChild(popupComponent.getElement());
     siteBodyElement.classList.remove('hide-overflow');
   };
 
-  cardComponent.getElement().querySelector('.film-card__poster').addEventListener('click', showPopup);
+  const onCloseBtnClick = (evt) => {
+    evt.preventDefault();
+    hidePopup();
+  };
 
-  cardComponent.getElement().querySelector('.film-card__title').addEventListener('click', showPopup);
+  const onCardClick = (evt) => {
+    if (evt.target.classList.contains('film-card__poster') || evt.target.classList.contains('film-card__title')
+      || evt.target.classList.contains('film-card__comments')) {
+      evt.preventDefault();
+      showPopup();
+    }
+  };
 
-  cardComponent.getElement().querySelector('.film-card__comments').addEventListener('click', showPopup);
+  cardComponent.getElement().addEventListener('click', onCardClick);
 
   render(filmsContainer, cardComponent.getElement());
 };
 
-const getWatchedFilmsAmount = (movies) => {
-  movies.forEach((movie) => {
-    if (movie.watched) {
-      watchedFilmsAmount++;
-    }
-  });
-  return watchedFilmsAmount;
-};
 const siteBodyElement = document.querySelector('.body');
 const siteHeaderElement = siteBodyElement.querySelector('.header');
 const siteMainElement = siteBodyElement.querySelector('.main');
 const siteFooterElement = siteBodyElement.querySelector('.footer');
 const footerStat = siteFooterElement.querySelector('.footer__statistics');
 
-render(siteHeaderElement, new UserRankView(getWatchedFilmsAmount(movies)).getElement());
+render(siteHeaderElement, new UserRankView(getUserRank(movies)).getElement());
 render(siteMainElement, new MenuView(filters).getElement());
 render(siteMainElement, new SortingView().getElement());
 render(siteMainElement, new FilmsSectionView().getElement());

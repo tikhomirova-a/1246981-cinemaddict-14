@@ -19,3 +19,15 @@ export const createElement = (template) => {
   newElement.innerHTML = template;
   return newElement.firstChild;
 };
+
+export const getUserRank = (movies) => {
+  let watchedFilmsAmount = 0;
+  movies.forEach((movie) => {
+    if (movie.watched) {
+      watchedFilmsAmount++;
+    }
+  });
+  return watchedFilmsAmount === 0 ? ''
+    : watchedFilmsAmount <= 10 ? 'Novice'
+      : watchedFilmsAmount <= 20 ? 'Fan' : 'Movie Buff';
+};
