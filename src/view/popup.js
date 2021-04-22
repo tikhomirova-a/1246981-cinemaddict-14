@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
-import {createElement} from '../util.js';
+import AbstractView from './abstract.js';
 
-const createPopapTemplate = (movie, comments) => {
+const createPopupTemplate = (movie, comments) => {
   const {
     actors,
     ageRating,
@@ -154,25 +154,25 @@ const createPopapTemplate = (movie, comments) => {
 </section>`;
 };
 
-export default class Popap {
+export default class Popup extends AbstractView {
   constructor(movie, comments) {
+    super();
     this._movie = movie;
     this._comments = comments;
-    this._element = null;
+    this._closeClickHandler = this._closeClickHandler.bind(this);
   }
 
   getTemplate() {
-    return createPopapTemplate(this._movie, this._comments);
+    return createPopupTemplate(this._movie, this._comments);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
+  _closeClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.closeClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setCloseClickHandler(callback) {
+    this._callback.closeClick = callback;
+    this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._closeClickHandler);
   }
 }

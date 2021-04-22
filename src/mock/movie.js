@@ -1,4 +1,4 @@
-import {generateRandomInteger, generateRandomFloat, generateElement, generateElements} from './util.js';
+import {generateRandomInteger, generateRandomFloat, generateElement, generateElements} from '../utils/common.js';
 import dayjs from 'dayjs';
 
 const titles = [

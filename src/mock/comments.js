@@ -1,4 +1,4 @@
-import {generateRandomInteger, generateElement} from './util.js';
+import {generateRandomInteger, generateElement} from '../utils/common.js';
 import dayjs from 'dayjs';
 
 const names = ['Tim Macoveev', 'John Doe', 'Anna Thompson', 'Erich Krause'];
