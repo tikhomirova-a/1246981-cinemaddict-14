@@ -14,8 +14,7 @@ import EmptyListView from './view/empty-list.js';
 import {generateMovie} from './mock/movie.js';
 import {generateComments} from './mock/comments.js';
 import {generateFilter} from './mock/filter.js';
-import {getUserRank, compareByRating, compareByComments} from './util.js';
-import {render} from './util.js';
+import {render, getUserRank, compareByRating, compareByComments} from './util.js';
 
 const ALL_CARDS_AMOUNT = 18;
 const EXTRA_CARDS_AMOUNT = 2;
