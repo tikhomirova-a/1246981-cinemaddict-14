@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
 import AbstractView from './abstract.js';
-import LoadMoreButtonView from "./load-more-button";
 
 const createPopupTemplate = (movie, comments) => {
   const {
