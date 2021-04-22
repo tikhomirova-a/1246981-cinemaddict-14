@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import AbstractView from './abstract.js';
+import LoadMoreButtonView from "./load-more-button";
 
 const createPopupTemplate = (movie, comments) => {
   const {
@@ -159,9 +160,20 @@ export default class Popup extends AbstractView {
     super();
     this._movie = movie;
     this._comments = comments;
+    this._closeClickHandler = this._closeClickHandler.bind(this);
   }
 
   getTemplate() {
     return createPopupTemplate(this._movie, this._comments);
+  }
+
+  _closeClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.closeClick();
+  }
+
+  setCloseClickHandler(callback) {
+    this._callback.closeClick = callback;
+    this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._closeClickHandler);
   }
 }
