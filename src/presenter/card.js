@@ -14,6 +14,8 @@ export default class Card {
 
     this._cardComponent = null;
     this._popupComponent = null;
+    this._movie = null;
+    this._comments = null;
 
     this._handleCardClick = this._handleCardClick.bind(this);
     this._handleCloseBtnClick = this._handleCloseBtnClick.bind(this);
@@ -22,21 +24,11 @@ export default class Card {
 
   init(movie, comments) {
     this._movie = movie;
-    this._comments = comments.slice();
-    this._cardComponent = new CardView(this._movie);
-    this._popupComponent = new PopupView(this._movie, this._filterComments(this._comments, this._movie.commentsId));
+    this._comments = comments;
+    this._cardComponent = new CardView(this._movie, this._comments);
+    this._popupComponent = new PopupView(this._movie, this._comments);
     this._cardComponent.setOpenClickHandler(this._handleCardClick);
     render(this._cardContainer, this._cardComponent);
-  }
-
-  _filterComments(comments, idArr) {
-    const filteredComments = [];
-    comments.map((comment) => {
-      if (idArr.includes(comment.id)) {
-        return filteredComments.push(comment);
-      }
-    });
-    return filteredComments;
   }
 
   _showPopup() {

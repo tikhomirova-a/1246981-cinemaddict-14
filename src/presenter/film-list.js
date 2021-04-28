@@ -35,7 +35,6 @@ export default class FilmList {
   init(movies, comments) {
     this._movies = movies.slice();
     this._comments = comments.slice();
-
     this._renderSorting();
     this._renderFilmsSection();
 
@@ -69,9 +68,19 @@ export default class FilmList {
     render(this._filmsSectionComponent, this._emptyFilmsListComponent);
   }
 
+  _filterComments(comments, idArr) {
+    const filteredComments = [];
+    comments.map((comment) => {
+      if (idArr.includes(comment.id)) {
+        return filteredComments.push(comment);
+      }
+    });
+    return filteredComments;
+  }
+
   _renderCard(container, movie) {
     const cardPresenter = new CardPresenter(container);
-    cardPresenter.init(movie, this._comments);
+    cardPresenter.init(movie, this._filterComments(this._comments, movie.commentsId));
   }
 
   _handleLoadMoreButtonClick() {
