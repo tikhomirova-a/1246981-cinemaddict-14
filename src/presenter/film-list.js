@@ -8,7 +8,9 @@ import RatedFilmsListView from '../view/rated-film-list.js';
 import CommentedFilmsListView from '../view/commented-film-list.js';
 import EmptyListView from '../view/empty-list.js';
 import {render, remove} from '../utils/render.js';
-import {compareByComments, compareByRating} from '../utils/compare.js';
+import {compareByComments, compareByRating, compareByDate} from '../utils/compare.js';
+import {updateItem} from '../utils/common.js';
+import {SortType} from '../utils/const.js';
 
 const CARDS_PER_STEP = 5;
 const EXTRA_CARDS_AMOUNT = 2;
@@ -17,6 +19,9 @@ export default class FilmList {
   constructor(mainContainer) {
     this._mainContainer = mainContainer;
     this._renderedCardsCount = CARDS_PER_STEP;
+    this._cardPresenter = {};
+    this._currentSortType = SortType.DEFAULT;
+    this._filteredComments = [];
 
     this._sortingComponent = new SortingView();
     this._filmsSectionComponent = new FilmsSectionView();
@@ -30,11 +35,15 @@ export default class FilmList {
     this._loadMoreButtonComponent = new LoadMoreButtonView();
 
     this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
+    this._handleCardChange = this._handleCardChange.bind(this);
+    this._handleModeChange = this._handleModeChange.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init(movies, comments) {
     this._movies = movies.slice();
     this._comments = comments.slice();
+    this._sourcedMovies = movies.slice();
     this._renderSorting();
     this._renderFilmsSection();
 
@@ -43,6 +52,7 @@ export default class FilmList {
 
   _renderSorting() {
     render(this._mainContainer, this._sortingComponent);
+    this._sortingComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _renderFilmsSection() {
@@ -79,8 +89,45 @@ export default class FilmList {
   }
 
   _renderCard(container, movie) {
-    const cardPresenter = new CardPresenter(container);
-    cardPresenter.init(movie, this._filterComments(this._comments, movie.commentsId));
+    const cardPresenter = new CardPresenter(container, this._handleCardChange, this._handleModeChange);
+    const filteredComments = this._filterComments(this._comments, movie.commentsId);
+    this._filteredComments = filteredComments;
+    cardPresenter.init(movie, filteredComments);
+    this._cardPresenter[movie.id] = cardPresenter;
+  }
+
+  _handleModeChange() {
+    Object.values(this._cardPresenter).forEach((presenter) => presenter.resetView());
+  }
+
+  _handleCardChange(updatedCard) {
+    this._movies = updateItem(this._movies, updatedCard);
+    this._sourcedMovies = updateItem(this._sourcedMovies, updatedCard);
+    this._cardPresenter[updatedCard.id].init(updatedCard, this._filteredComments);
+  }
+
+  _sortMovies(sortType) {
+    switch (sortType) {
+      case SortType.DATE:
+        this._movies.sort(compareByDate);
+        break;
+      case SortType.RATING:
+        this._movies.sort(compareByRating);
+        break;
+      default:
+        this._movies = this._sourcedMovies;
+    }
+    this._currentSortType = sortType;
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortMovies(sortType);
+    this._clearFilmList();
+    this._renderFilmList();
   }
 
   _handleLoadMoreButtonClick() {
@@ -99,6 +146,13 @@ export default class FilmList {
     render(this._filmsListComponent, this._loadMoreButtonComponent);
 
     this._loadMoreButtonComponent.setClickHandler(this._handleLoadMoreButtonClick);
+  }
+
+  _clearFilmList() {
+    Object.values(this._cardPresenter).forEach((presenter) => presenter.destroy());
+    this._cardPresenter = {};
+    this._renderedCardsCount = CARDS_PER_STEP;
+    remove(this._loadMoreButtonComponent);
   }
 
   _renderFilmList() {

@@ -1,5 +1,6 @@
 import {generateRandomInteger, generateRandomFloat, generateElement, generateElements} from '../utils/common.js';
 import dayjs from 'dayjs';
+import {nanoid} from 'nanoid';
 
 const titles = [
   'The Man with the Golden Arm',
@@ -110,6 +111,7 @@ const generateCommentsId = () => {
 const generateMovie = () => {
   const watchedMovie = Boolean(generateRandomInteger(0, 1));
   return {
+    id: nanoid(),
     title: generateElement(titles),
     alternativeTitle: generateElement(titles),
     poster: generateElement(posters),
